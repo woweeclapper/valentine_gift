@@ -25,18 +25,43 @@
   animation: waggle 0.4s ease-in-out;
 }
 .cell {
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
+  outline: 2px solid #f50a2d;
+  background: #ffe6ea;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden; /* ← CRUCIAL: clips GIFs to cell bounds */
+  border: 2px solid #ffb6c1;
+  border-radius: 12px;
+  cursor: pointer; /* Nice touch for clickable cells */
+  position: relative;
+  box-sizing: border-box;
 }
 
 .cell-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* keeps proportions */
-  pointer-events: none; /* prevents blocking clicks */
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  pointer-events: none; /* Allows clicks on cell, not img */
+}
+
+/* Optional: make sure the hugging gif is centered and sized reasonably */
+#huggingImg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 300px;
+  max-height: 300px;
+  z-index: 100;
+  display: none;
+  position: fixed;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(255, 105, 180, 0.5);
 }
 
 @keyframes waggle {

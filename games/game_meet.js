@@ -45,8 +45,21 @@ export function startMeetGame() {
       cell.style.alignItems = "center";
       cell.dataset.index = i.toString();
 
-      if (i === posA) cell.textContent = goma.style.display = "none";
-      if (i === posB) cell.textContent = peach.style.display = "none";
+      // Only add Goma if not meeting
+      if (i === posA && posA !== posB) {
+        const goma = document.createElement("img");
+        goma.src = "assets/goma_small.gif";
+        goma.className = "cell-img";
+        cell.appendChild(goma);
+      }
+
+      // Only add Peach if not meeting
+      if (i === posB && posA !== posB) {
+        const peach = document.createElement("img");
+        peach.src = "assets/peach_small.gif";
+        peach.className = "cell-img";
+        cell.appendChild(peach);
+      }
       if (posA === posB) {
         huggingImg.style.display = "block";
         return;

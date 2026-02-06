@@ -3,11 +3,11 @@ import { startRevealGame } from "./games/game_reveal.js";
 import { startCatchGame } from "./games/game_catch.js";
 
 const games = [startMeetGame, startRevealGame, startCatchGame];
-const chosenGame = startMeetGame; //games[Math.floor(Math.random() * games.length)];
+const chosenGame = startMeetGame; // intentional
 
 window.onload = () => {
-  console.log("chosen game: ", chosenGame.name);
-  chosenGame(showValentinePopup);
+  console.log("chosen game:", chosenGame.name);
+  chosenGame(showValentinePopup); // pass callback, but DO NOT call popup here
 };
 
 function showValentinePopup() {
@@ -24,7 +24,6 @@ function showValentinePopup() {
   };
 
   noBtn.onclick = () => {
-    // Restart GIF
     sprite.style.opacity = 0;
     const src = sprite.src;
     sprite.src = "";
