@@ -1,10 +1,14 @@
-export function startMeetGame() {
+export function startMeetGame(onComplete) {
   const container = document.getElementById("game-container");
+  if (!container) {
+    console.error("game container not found");
+    return;
+  }
   container.innerHTML = "";
 
   const grid = document.createElement("div");
   grid.style.display = "grid";
-  grid.style.gridTemplateColumns = "repeat(5, 60px)";
+  grid.style.gridTemplateColumns = "repeat(5, 100px)";
   grid.style.gap = "4px";
 
   // Create hugging image element
@@ -32,37 +36,42 @@ export function startMeetGame() {
 
   let posA = 0;
   let posB = 24;
+  let isGameOver = false; //prevent multiple alerts
 
   function render() {
     grid.innerHTML = "";
+
+    // WIN CONDITION CHECK
+    if (posA === posB) {
+      huggingImg.style.display = "block";
+
+      // 3. If game just finished, wait 1.5s then show popup
+      if (!isGameOver) {
+        isGameOver = true;
+        setTimeout(() => {
+          if (onComplete) onComplete();
+        }, 1000);
+      }
+      return; // Stop rendering the grid
+    }
+
     for (let i = 0; i < 25; i++) {
       const cell = document.createElement("div");
-      cell.style.width = "60px";
-      cell.style.height = "60px";
-      cell.style.background = "#ffe6ea";
-      cell.style.display = "flex";
-      cell.style.justifyContent = "center";
-      cell.style.alignItems = "center";
+      cell.classList.add("cell"); // Ensure this matches your CSS
       cell.dataset.index = i.toString();
 
-      // Only add Goma if not meeting
-      if (i === posA && posA !== posB) {
+      if (i === posA) {
         const goma = document.createElement("img");
-        goma.src = "assets/goma_small.gif";
-        goma.className = "cell-img";
+        goma.src = "assets/goma.gif"; // creating img fresh avoids moving issues
+        goma.classList.add("cell-img");
         cell.appendChild(goma);
       }
 
-      // Only add Peach if not meeting
-      if (i === posB && posA !== posB) {
+      if (i === posB) {
         const peach = document.createElement("img");
-        peach.src = "assets/peach_small.gif";
-        peach.className = "cell-img";
+        peach.src = "assets/peach.gif";
+        peach.classList.add("cell-img");
         cell.appendChild(peach);
-      }
-      if (posA === posB) {
-        huggingImg.style.display = "block";
-        return;
       }
 
       grid.appendChild(cell);
@@ -81,31 +90,32 @@ export function startMeetGame() {
         return;
       }
 
-      if (posA > posB) {
-        posA -= direction;
-      } else {
-        posA += direction;
+      if (posA !== posB) {
+        if (posA > posB) posA -= direction;
+        else posA += direction;
       }
 
       render();
-      distance -= direction;
-    }, 50);
+    }, 200); //for smoother sliding
   }
 
   window.addEventListener("keydown", (e) => {
+    if (isGameOver) return; // prevent movement after game over
+
     if (e.key === "ArrowRight" && posA % 5 !== 4) posA++;
     if (e.key === "ArrowLeft" && posA % 5 !== 0) posA--;
     if (e.key === "ArrowUp" && posA >= 5) posA -= 5;
     if (e.key === "ArrowDown" && posA < 20) posA += 5;
 
-    if (posA === posB) alert("They met! ❤️");
+    //if (posA === posB) alert("They met! ❤️");
 
     render();
   });
 
   window.addEventListener("click", (e) => {
+    if (isGameOver) return; // prevent interaction after game over
     const cell = e.target.closest("div");
-    if (cell && cell.textContent === goma.src) {
+    if (cell && Numeber(cell.dataset.index) === posA) {
       posB = Number(cell.dataset.index);
       slideCharacters();
     }
@@ -113,7 +123,7 @@ export function startMeetGame() {
 
   window.addEventListener("touchstart", (e) => {
     const cell = e.target.closest("div");
-    if (cell && cell.textContent === goma.src) {
+    if (cell && Number(cell.dataset.index) === posA) {
       posB = Number(cell.dataset.index);
       slideCharacters();
     }

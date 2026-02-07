@@ -12,18 +12,18 @@ window.onload = () => {
 
 function showValentinePopup() {
   const popup = document.getElementById("valentine-popup");
-  const yesBtn = document.getElementById("yes-btn");
-  const noBtn = document.getElementById("no-btn");
+  const yesButton = document.getElementById("yes-btn");
+  const noButton = document.getElementById("no-btn");
   const sprite = document.getElementById("sprite");
 
   popup.style.display = "flex";
 
-  yesBtn.onclick = () => {
+  yesButton.onclick = () => {
     popup.style.display = "none";
     alert("Yay! ❤️");
   };
 
-  noBtn.onclick = () => {
+  noButton.onclick = () => {
     sprite.style.opacity = 0;
     const src = sprite.src;
     sprite.src = "";
