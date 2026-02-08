@@ -1,6 +1,7 @@
 import { startMeetGame } from "./games/game_meet.js";
 import { startRevealGame } from "./games/game_reveal.js";
 import { startCatchGame } from "./games/game_catch.js";
+import { initEnvelopeAnimation } from "./love letter/envelope.js";
 
 const games = [startMeetGame, startRevealGame, startCatchGame];
 const chosenGame = startMeetGame; // intentional
@@ -21,6 +22,7 @@ function showValentinePopup() {
   yesButton.onclick = () => {
     popup.style.display = "none";
     alert("Yay! ❤️");
+    initEnvelopeAnimation(); // Initialize the envelope animation when "Yes" is clicked
   };
 
   noButton.onclick = () => {
