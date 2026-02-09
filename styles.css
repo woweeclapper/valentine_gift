@@ -1,47 +1,103 @@
 .popup {
   position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 0, 221, 0.6);
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
   display: none;
+  background: rgba(255, 0, 221, 0.6);
+  backdrop-filter: blur(4px); /* optional: makes it feel dreamy */
+
+  /* Flexbox layout for centering content */
+
   justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 1rem;
+
   text-align: center;
+  z-index: 9999;
 }
 
 .disabled {
   opacity: 0.5;
 }
 body {
+  /* 1. Make body the exact size of the browser window */
   margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+
+  /* 2. Prevent content from stretching or breaking */
   display: flex;
-  justify-content: center; /* Centers horizontally */
-  align-items: center; /* Centers vertically */
-  min-height: 100vh;
-  min-width: 100vw;
-  background-color: #ec05ba;
-  overflow: hidden;
+  flex-direction: column; /* Stacks items vertically */
+  align-items: center; /* Centers items horizontally */
+  justify-content: flex-start; /* Aligns items to the top instead of pushing to edges */
+
+  /* 3. Aesthetic padding so items don't touch the very edge */
+  padding: 40px 0;
+  box-sizing: border-box;
+
+  /* 4. Background  */
+  background-color: #fc059d;
+  overflow: hidden; /* Prevents scrollbars if the grid is large */
+  animation: breathe 15s ease-in-out infinite;
+}
+@keyframes breathe {
+  0% {
+    background-color: #f4b0d4;
+  } /* soft mid pink */
+  10% {
+    background-color: #f29acb;
+  } /* gentle rosy pink */
+  20% {
+    background-color: #f885d2;
+  } /* bubblegum pink */
+  30% {
+    background-color: #fa4ec1;
+  } /* hot pink */
+  40% {
+    background-color: #ff1e9c;
+  } /* neon pink */
+  50% {
+    background-color: #ff0066;
+  } /* valentine magenta */
+  60% {
+    background-color: #d40055;
+  } /* deep rose */
+  70% {
+    background-color: #b0003f;
+  } /* wine pink */
+  80% {
+    background-color: #8a0030;
+  } /* romantic burgundy */
+  90% {
+    background-color: #c00281;
+  } /* purple‑pink */
+  100% {
+    background-color: #f4b0d4;
+  } /* return to soft mid pink */
 }
 
 #game-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 10px;
 }
+
 .sprite {
   width: 120px;
   opacity: 0;
   transition: opacity 0.2s;
 }
-
+.grid {
+  justify-items: center;
+  align-items: flex-start;
+}
 .cell {
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   outline: 2px solid #f8f8f8;
   background: #ffe6ea;
   display: flex;
@@ -53,6 +109,19 @@ body {
   cursor: pointer; /* Nice touch for clickable cells */
   position: relative;
   box-sizing: border-box;
+}
+
+.cell.obstacle {
+  background: #8b4513;
+  border-color: #5d2f0d;
+  cursor: not-allowed;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #8b4513,
+    #8b4513 10px,
+    #a0522d 10px,
+    #a0522d 20px
+  );
 }
 
 .cell-img {
@@ -69,12 +138,11 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
+  padding-top: 80px;
   transform: translate(-50%, -50%);
   max-width: 300px;
   max-height: 300px;
-  z-index: 100;
   display: none;
-  position: fixed;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(255, 105, 180, 0.5);
 }

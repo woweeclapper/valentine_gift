@@ -6,9 +6,10 @@ export function startMeetGame(onComplete) {
   }
   container.innerHTML = "";
 
+  //create a grid of 5 columns?
   const grid = document.createElement("div");
   grid.style.display = "grid";
-  grid.style.gridTemplateColumns = "repeat(5, 100px)";
+  grid.style.gridTemplateColumns = "repeat(5, 60px)";
   grid.style.gap = "4px";
 
   // Create hugging image element
@@ -37,6 +38,71 @@ export function startMeetGame(onComplete) {
   let posA = 0;
   let posB = 24;
   let isGameOver = false; //prevent multiple alerts
+  let obstacles = []; // Array to store obstacle positions
+
+  // Maze generation function - ensures valid path from 0 to 24
+  function generateMaze() {
+    obstacles = [];
+    const totalCells = 25;
+    const obstacleCount = 8; // Number of obstacles to place
+
+    // Generate random obstacles, avoiding start (0) and end (24) positions
+    while (obstacles.length < obstacleCount) {
+      const randomPos = Math.floor(Math.random() * totalCells);
+      if (
+        randomPos !== 0 &&
+        randomPos !== 24 &&
+        !obstacles.includes(randomPos)
+      ) {
+        // Check if adding this obstacle would block all paths
+        const testObstacles = [...obstacles, randomPos];
+        if (hasValidPath(testObstacles, 0, 24)) {
+          obstacles.push(randomPos);
+        }
+      }
+    }
+  }
+
+  // BFS pathfinding to ensure there's always a valid path
+  function hasValidPath(obstacleList, start, end) {
+    const visited = new Set();
+    const queue = [start];
+    visited.add(start);
+
+    while (queue.length > 0) {
+      const current = queue.shift();
+      if (current === end) return true;
+
+      // Get adjacent cells
+      const adjacent = [
+        current - 1, // left
+        current + 1, // right
+        current - 5, // up
+        current + 5, // down
+      ];
+
+      for (const next of adjacent) {
+        // Check bounds and obstacles
+        if (next < 0 || next >= 25) continue;
+        if (obstacleList.includes(next)) continue;
+        if (visited.has(next)) continue;
+
+        // Check if moving horizontally stays in same row
+        if (
+          Math.abs(next - current) === 1 &&
+          Math.floor(next / 5) !== Math.floor(current / 5)
+        )
+          continue;
+
+        visited.add(next);
+        queue.push(next);
+      }
+    }
+    return false;
+  }
+
+  // Generate maze on game start
+  generateMaze();
 
   function render() {
     grid.innerHTML = "";
@@ -57,7 +123,7 @@ export function startMeetGame(onComplete) {
 
     for (let i = 0; i < 25; i++) {
       const cell = document.createElement("div");
-      cell.classList.add("cell"); // Ensure this matches your CSS
+      cell.classList.add("cell"); // Ensure this matches CSS
       cell.dataset.index = i.toString();
 
       if (i === posA) {
@@ -74,6 +140,11 @@ export function startMeetGame(onComplete) {
         cell.appendChild(peach);
       }
 
+      // Add obstacles
+      if (obstacles.includes(i)) {
+        cell.classList.add("obstacle");
+      }
+
       grid.appendChild(cell);
     }
   }
@@ -81,19 +152,21 @@ export function startMeetGame(onComplete) {
   render();
   container.appendChild(grid);
   function slideCharacters() {
+    if (isSliding) return; // Prevent multiple simultaneous slides
+    isSliding = true;
+
     const distance = Math.abs(posA - posB);
     const direction = posA > posB ? -1 : 1;
 
     const interval = setInterval(() => {
-      if (distance === 0) {
+      if (posA === posB) {
         clearInterval(interval);
+        isSliding = false;
         return;
       }
 
-      if (posA !== posB) {
-        if (posA > posB) posA -= direction;
-        else posA += direction;
-      }
+      if (posA > posB) posA -= direction;
+      else posA += direction;
 
       render();
     }, 200); //for smoother sliding
@@ -102,30 +175,61 @@ export function startMeetGame(onComplete) {
   window.addEventListener("keydown", (e) => {
     if (isGameOver) return; // prevent movement after game over
 
-    if (e.key === "ArrowRight" && posA % 5 !== 4) posA++;
-    if (e.key === "ArrowLeft" && posA % 5 !== 0) posA--;
-    if (e.key === "ArrowUp" && posA >= 5) posA -= 5;
-    if (e.key === "ArrowDown" && posA < 20) posA += 5;
+    let newPos = posA;
+    if (e.key === "ArrowRight" && posA % 5 !== 4) newPos = posA + 1;
+    if (e.key === "ArrowLeft" && posA % 5 !== 0) newPos = posA - 1;
+    if (e.key === "ArrowUp" && posA >= 5) newPos = posA - 5;
+    if (e.key === "ArrowDown" && posA < 20) newPos = posA + 5;
 
-    //if (posA === posB) alert("They met! ❤️");
+    // Check if new position is not an obstacle
+    if (!obstacles.includes(newPos)) {
+      posA = newPos;
+    }
 
     render();
   });
 
-  window.addEventListener("click", (e) => {
-    if (isGameOver) return; // prevent interaction after game over
-    const cell = e.target.closest("div");
-    if (cell && Numeber(cell.dataset.index) === posA) {
-      posB = Number(cell.dataset.index);
-      slideCharacters();
+  // Function for tap/click - moves goma one step without sliding
+  function moveGomaOneStep(index) {
+    if (isGameOver) return;
+
+    // Check if cell is an obstacle
+    if (obstacles.includes(index)) return;
+
+    // Check if tapped cell is adjacent to posA (goma's position)
+    const isAdjacent =
+      (index === posA - 1 && posA % 5 !== 0) || // left
+      (index === posA + 1 && posA % 5 !== 4) || // right
+      index === posA - 5 || // up
+      index === posA + 5; // down
+
+    if (isAdjacent) {
+      // Move goma one step immediately (no sliding animation)
+      posA = index;
+      render();
     }
+  }
+
+  window.addEventListener("click", (e) => {
+    if (isGameOver) return;
+    const cell = e.target.closest(".cell");
+    if (!cell) return;
+
+    const clickedIndex = Number(cell.dataset.index);
+    moveGomaOneStep(clickedIndex);
   });
 
-  window.addEventListener("touchstart", (e) => {
-    const cell = e.target.closest("div");
-    if (cell && Number(cell.dataset.index) === posA) {
-      posB = Number(cell.dataset.index);
-      slideCharacters();
-    }
-  });
+  window.addEventListener(
+    "touchstart",
+    (e) => {
+      if (isGameOver) return;
+      e.preventDefault(); // Prevent scrolling/zooming on mobile
+      const cell = e.target.closest(".cell");
+      if (!cell) return;
+
+      const touchedIndex = Number(cell.dataset.index);
+      moveGomaOneStep(touchedIndex);
+    },
+    { passive: false },
+  );
 }
