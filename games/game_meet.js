@@ -9,7 +9,7 @@ export function startMeetGame(onComplete) {
   //create a grid of 5 columns?
   const grid = document.createElement("div");
   grid.style.display = "grid";
-  grid.style.gridTemplateColumns = "repeat(5, 60px)";
+  grid.style.gridTemplateColumns = "repeat(5, 70px)";
   grid.style.gap = "4px";
 
   // Create hugging image element
@@ -39,6 +39,16 @@ export function startMeetGame(onComplete) {
   let posB = 24;
   let isGameOver = false; //prevent multiple alerts
   let obstacles = []; // Array to store obstacle positions
+
+  //create instructions
+  const instructions = document.createElement("div");
+  instructions.id = "instructions";
+  instructions.classList.add("instructions");
+  instructions.innerHTML = `
+    <p>🎮 Use arrow keys or tap adjacent cells to move Goma!</p>
+    <p>🧱 Guide him to his Peach! Good Luck! </p>
+  `;
+  container.appendChild(instructions);
 
   // Maze generation function - ensures valid path from 0 to 24
   function generateMaze() {
@@ -110,6 +120,7 @@ export function startMeetGame(onComplete) {
     // WIN CONDITION CHECK
     if (posA === posB) {
       huggingImg.style.display = "block";
+      instructions.style.display = "none";
 
       // 3. If game just finished, wait 1.5s then show popup
       if (!isGameOver) {

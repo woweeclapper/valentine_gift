@@ -13,7 +13,75 @@
   gap: 1rem;
 
   text-align: center;
+  font-family: "Dancing Script";
+  font-size: 9vw;
+  font-size: 9vh;
   z-index: 9999;
+}
+#yes-btn {
+  padding: 12px 28px;
+  width: 100px;
+  height: 50px;
+  font-size: 1.2rem;
+  font-family: "Dancing Script", cursive;
+  color: white;
+  background: linear-gradient(135deg, #ff4fa3, #ff0066);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(255, 0, 150, 0.4);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+#yes-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 10px 25px rgba(255, 0, 150, 0.6);
+}
+
+#yes-btn:active {
+  transform: scale(0.96);
+}
+
+#no-btn {
+  padding: 12px 24px;
+  width: 100px;
+  height: 50px;
+  font-size: 1.2rem;
+  font-family: "Dancing Script", cursive;
+  color: #e0e0e0;
+  background: rgba(20, 20, 20, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+#no-btn:hover {
+  background: #000000d5;
+  color: #ffffff;
+}
+
+/* Transparent chain overlay on hover */
+#no-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("assets/chain_overlay.png");
+  background-size: 120%;
+  background-repeat: repeat;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+#no-btn:hover::after {
+  opacity: 0.25;
 }
 
 .disabled {
@@ -96,8 +164,8 @@ body {
   align-items: flex-start;
 }
 .cell {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   outline: 2px solid #f8f8f8;
   background: #ffe6ea;
   display: flex;
@@ -145,4 +213,18 @@ body {
   display: none;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(255, 105, 180, 0.5);
+}
+.instructions {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 15px 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  align-items: flex-start;
+  flex-direction: column;
+  color: rgb(0, 0, 0);
+  margin-bottom: 10px;
+  font-family: "Dancing Script";
+  font-size: 1rem;
+  display: flex;
 }

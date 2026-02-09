@@ -26,7 +26,7 @@ function showValentinePopup() {
   };
 
   noButton.onclick = () => {
-    sprite.style.opacity = 0;
+    sprite.style.opacity = 0; //sprite is no_popup.gif
     const src = sprite.src;
     sprite.src = "";
     sprite.src = src;
