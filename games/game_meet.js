@@ -23,14 +23,14 @@ export function startMeetGame(onComplete) {
   cell.classList.add("cell");
 
   const goma = document.createElement("img");
-  goma.src = "assets/goma.gif";
+  goma.src = "assets/goma_sad.gif";
   goma.classList.add("cell-img");
 
   cell.appendChild(goma);
   grid.appendChild(cell);
 
   const peach = document.createElement("img");
-  peach.src = "assets/peach.gif";
+  peach.src = "assets/peach_sad.gif";
   peach.classList.add("cell-img");
   cell.appendChild(peach);
   grid.appendChild(cell);
@@ -54,7 +54,7 @@ export function startMeetGame(onComplete) {
   function generateMaze() {
     obstacles = [];
     const totalCells = 25;
-    const obstacleCount = 8; // Number of obstacles to place
+    const obstacleCount = Math.floor(Math.random() * 12) + 5; // Number of obstacles to place
 
     // Generate random obstacles, avoiding start (0) and end (24) positions
     while (obstacles.length < obstacleCount) {
@@ -139,14 +139,14 @@ export function startMeetGame(onComplete) {
 
       if (i === posA) {
         const goma = document.createElement("img");
-        goma.src = "assets/goma.gif"; // creating img fresh avoids moving issues
+        goma.src = "assets/goma_sad.gif"; // creating img fresh avoids moving issues
         goma.classList.add("cell-img");
         cell.appendChild(goma);
       }
 
       if (i === posB) {
         const peach = document.createElement("img");
-        peach.src = "assets/peach.gif";
+        peach.src = "assets/peach_sad.gif";
         peach.classList.add("cell-img");
         cell.appendChild(peach);
       }
@@ -162,27 +162,8 @@ export function startMeetGame(onComplete) {
 
   render();
   container.appendChild(grid);
-  function slideCharacters() {
-    if (isSliding) return; // Prevent multiple simultaneous slides
-    isSliding = true;
 
-    const distance = Math.abs(posA - posB);
-    const direction = posA > posB ? -1 : 1;
-
-    const interval = setInterval(() => {
-      if (posA === posB) {
-        clearInterval(interval);
-        isSliding = false;
-        return;
-      }
-
-      if (posA > posB) posA -= direction;
-      else posA += direction;
-
-      render();
-    }, 200); //for smoother sliding
-  }
-
+  // KEYBOARD CONTROL
   window.addEventListener("keydown", (e) => {
     if (isGameOver) return; // prevent movement after game over
 

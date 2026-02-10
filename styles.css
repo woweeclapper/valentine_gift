@@ -84,9 +84,6 @@
   opacity: 0.25;
 }
 
-.disabled {
-  opacity: 0.5;
-}
 body {
   /* 1. Make body the exact size of the browser window */
   margin: 0;
