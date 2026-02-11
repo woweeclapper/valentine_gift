@@ -1,4 +1,3 @@
-// envelope.js
 export function initEnvelopeAnimation() {
   const envelope = document.getElementById("envelope");
   const btnOpen = document.getElementById("open");

@@ -15,7 +15,7 @@ export function startMeetGame(onComplete) {
 
   // Create hugging finish screen image element
   let huggingImg = document.createElement("img");
-  huggingImg.id = "huggingImg";
+  huggingImg.id = "finishImg";
   huggingImg.src = "assets/hugging_cats.gif";
   huggingImg.style.display = "none";
   container.appendChild(huggingImg);

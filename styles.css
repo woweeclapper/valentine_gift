@@ -199,16 +199,6 @@ body {
 }
 
 /*  make sure the hugging gif is centered and sized reasonably */
-#huggingImg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  padding-top: 80px;
-  transform: translate(-50%, -50%);
-  max-width: 300px;
-  max-height: 300px;
-  display: none;
-}
 
 /*make sure the finishing gif is centered and sized reasonably */
 #finishImg {
