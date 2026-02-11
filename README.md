@@ -2,5 +2,5 @@
 
 ### 3 Game Modes, random on load
 - Meet: Guide the cat to meet up with each other
-- Reveal: A puzzle that will reveal a hidden message
+- Reveal: A puzzle that will reveal a hidden image
 - Catch: Catch 10 hearts to win
