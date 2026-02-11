@@ -8,11 +8,12 @@ export function startMeetGame(onComplete) {
 
   //create a grid of 5 columns?
   const grid = document.createElement("div");
+  grid.id = "grid";
   grid.style.display = "grid";
   grid.style.gridTemplateColumns = "repeat(5, 70px)";
   grid.style.gap = "4px";
 
-  // Create hugging image element
+  // Create hugging finish screen image element
   let huggingImg = document.createElement("img");
   huggingImg.id = "huggingImg";
   huggingImg.src = "assets/hugging_cats.gif";
