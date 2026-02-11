@@ -47,7 +47,7 @@ export function startMeetGame(onComplete) {
   instructions.classList.add("instructions");
   instructions.innerHTML = `
     <p>🎮 Use arrow keys or tap adjacent cells to move Goma!</p>
-    <p>🧱 Guide him to his Peach! Good Luck! </p>
+    <p>❤️ Guide him to his Peach! Good Luck! </p>
   `;
   container.appendChild(instructions);
 

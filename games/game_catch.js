@@ -34,6 +34,16 @@ export function startCatchGame(onComplete) {
 
   grid.appendChild(bucket);
 
+  //create instructions
+  const instructions = document.createElement("div");
+  instructions.id = "instructions";
+  instructions.classList.add("instructions");
+  instructions.innerHTML = `
+    <p>🎮 Use arrow keys or touch and drag to move Goma!</p>
+    <p>❤️ Fill his bucket with 10 hearts to win! Good Luck! </p>
+  `;
+  container.appendChild(instructions);
+
   // BUCKET STATES
   const bucket1 = "assets/goma_empty.gif";
   const bucket2 = "assets/goma_half.png";
@@ -123,6 +133,7 @@ export function startCatchGame(onComplete) {
       grid.style.display = "none";
       isGameOver = true;
       finishScreen.style.display = "block";
+      instructions.style.display = "none";
 
       setTimeout(() => {
         if (onComplete) onComplete();
