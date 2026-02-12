@@ -3,14 +3,14 @@ export function startRevealGame(onComplete) {
   container.innerHTML = "";
   container.style.position = "relative";
 
-  // FINISH SCREEN
+  //end screen
   const finishScreen = document.createElement("img");
   finishScreen.src = "assets/goma_kissed_peach.gif";
   finishScreen.id = "finishImg";
   finishScreen.style.display = "none";
   container.appendChild(finishScreen);
 
-  // PUZZLE BOARD
+  //creating board
   const board = document.createElement("div");
   board.style.display = "grid";
   board.style.gridTemplateColumns = "repeat(3, 100px)";
@@ -21,7 +21,7 @@ export function startRevealGame(onComplete) {
   board.style.userSelect = "none";
   container.appendChild(board);
 
-  // INSTRUCTIONS
+  //instructions
   const instructions = document.createElement("div");
   instructions.id = "instructions";
   instructions.classList.add("instructions");
@@ -31,7 +31,7 @@ export function startRevealGame(onComplete) {
   `;
   container.appendChild(instructions);
 
-  // PUZZLE PIECES
+  //puzzle pieces in order
   const pieces = [
     "assets/piece_1.png",
     "assets/piece_2.png",
@@ -46,20 +46,20 @@ export function startRevealGame(onComplete) {
 
   const shuffled = [...pieces].sort(() => Math.random() - 0.5);
 
-  // MOBILE DRAG STATE
+  //mobile drag variable
   let isDragging = false;
   let draggedTile = null;
   let offsetX = 0;
   let offsetY = 0;
 
-  // COMPLETION CHECK TIMER
+  //completion check timer
   let completionTimer = null;
   function scheduleCompletionCheck() {
     clearTimeout(completionTimer);
     completionTimer = setTimeout(checkCompletion, 800);
   }
 
-  // CREATE TILES
+  //create tiles
   shuffled.forEach((src) => {
     const wrapper = document.createElement("div");
     wrapper.className = "tile-wrapper";
@@ -89,7 +89,7 @@ export function startRevealGame(onComplete) {
     wrapper.appendChild(tile);
     board.appendChild(wrapper);
 
-    // DESKTOP DRAG
+    //pc drag
     tile.draggable = true;
 
     tile.addEventListener("dragstart", (e) => {
@@ -121,7 +121,7 @@ export function startRevealGame(onComplete) {
       scheduleCompletionCheck();
     });
 
-    // MOBILE TOUCH DRAG
+    //phone drag
     tile.addEventListener("touchstart", (e) => {
       e.preventDefault();
       isDragging = true;
@@ -191,7 +191,7 @@ export function startRevealGame(onComplete) {
     tileB.dataset.correctIndex = tempIndex;
   }
 
-  // RESET MOBILE TILE POSITION
+  // reset mobile tile position
   function resetTilePosition(tile) {
     tile.style.position = "relative";
     tile.style.zIndex = "";
@@ -203,7 +203,7 @@ export function startRevealGame(onComplete) {
     tile.style.transform = "";
   }
 
-  // COMPLETION CHECK
+  //check win condition
   function checkCompletion() {
     let correct = 0;
 
