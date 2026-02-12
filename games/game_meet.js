@@ -126,7 +126,7 @@ export function startMeetGame(onComplete) {
       huggingImg.style.display = "block";
       instructions.style.display = "none";
 
-      // 3. If game just finished, wait 1.5s then show popup
+      //If game just finished, wait 1.5s then show popup
       if (!isGameOver) {
         isGameOver = true;
         setTimeout(() => {
@@ -167,7 +167,7 @@ export function startMeetGame(onComplete) {
   render();
   container.appendChild(grid);
 
-  // KEYBOARD CONTROL
+  //keyboard control
   window.addEventListener("keydown", (e) => {
     if (isGameOver) return; // prevent movement after game over
 
