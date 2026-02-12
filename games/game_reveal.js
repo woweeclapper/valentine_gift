@@ -21,7 +21,17 @@ export function startRevealGame(onComplete) {
   board.style.userSelect = "none";
   container.appendChild(board);
 
-  // 9 PUZZLE PIECES
+  // INSTRUCTIONS
+  const instructions = document.createElement("div");
+  instructions.id = "instructions";
+  instructions.classList.add("instructions");
+  instructions.innerHTML = `
+    <p>🎮 Drag and swap the tiles to rearrange!</p>
+    <p>❤️ Solve the puzzle to reveal a hidden message!</p>
+  `;
+  container.appendChild(instructions);
+
+  // PUZZLE PIECES
   const pieces = [
     "assets/piece_1.png",
     "assets/piece_2.png",
@@ -34,7 +44,6 @@ export function startRevealGame(onComplete) {
     "assets/piece_9.png",
   ];
 
-  // Shuffle
   const shuffled = [...pieces].sort(() => Math.random() - 0.5);
 
   // MOBILE DRAG STATE
@@ -43,23 +52,28 @@ export function startRevealGame(onComplete) {
   let offsetX = 0;
   let offsetY = 0;
 
+  // COMPLETION CHECK TIMER
+  let completionTimer = null;
+  function scheduleCompletionCheck() {
+    clearTimeout(completionTimer);
+    completionTimer = setTimeout(checkCompletion, 800);
+  }
+
+  // CREATE TILES
   shuffled.forEach((src) => {
-    // 1. CREATE WRAPPER (This stays in the grid layout)
     const wrapper = document.createElement("div");
     wrapper.className = "tile-wrapper";
-    wrapper.style.position = "relative"; // Anchor for tile
+    wrapper.style.position = "relative";
     wrapper.style.width = "100px";
     wrapper.style.height = "100px";
-    wrapper.style.userSelect = "none";
 
-    // 2. CREATE TILE (This is the visual part that moves)
     const tile = document.createElement("div");
     tile.className = "tile";
     tile.style.width = "100%";
     tile.style.height = "100%";
     tile.style.borderRadius = "10px";
     tile.style.overflow = "hidden";
-    tile.style.position = "relative"; // Default state
+    tile.style.position = "relative";
     tile.style.cursor = "grab";
     tile.style.boxShadow = "0 4px 10px rgba(0,0,0,0.2)";
     tile.dataset.correctIndex = pieces.indexOf(src);
@@ -69,19 +83,17 @@ export function startRevealGame(onComplete) {
     img.style.width = "100%";
     img.style.height = "100%";
     img.style.objectFit = "cover";
-    img.style.pointerEvents = "none"; // Important: prevents img from stealing touch events
+    img.style.pointerEvents = "none";
     tile.appendChild(img);
 
-    // 3. NEST TILE IN WRAPPER
     wrapper.appendChild(tile);
-    board.appendChild(wrapper); // Only append wrapper to board!
+    board.appendChild(wrapper);
 
-    // --- DRAG EVENTS (DESKTOP) ---
+    // DESKTOP DRAG
     tile.draggable = true;
 
     tile.addEventListener("dragstart", (e) => {
       e.dataTransfer.setData("src", img.src);
-      e.dataTransfer.setData("index", tile.dataset.correctIndex);
       tile.style.opacity = "0.5";
     });
 
@@ -94,54 +106,41 @@ export function startRevealGame(onComplete) {
     tile.addEventListener("drop", (e) => {
       e.preventDefault();
       const fromSrc = e.dataTransfer.getData("src");
-      const fromIndex = e.dataTransfer.getData("index");
       const toImg = tile.querySelector("img");
 
       if (fromSrc !== toImg.src) {
-        // Find the source tile in the DOM based on the index/src
-        const allTiles = [...board.querySelectorAll(".tile")];
-        const fromTile = allTiles.find(
+        const fromTile = [...board.querySelectorAll(".tile")].find(
           (t) => t.querySelector("img").src === fromSrc,
         );
 
         if (fromTile) {
-          // Swap logic
-          const fromImg = fromTile.querySelector("img");
-          const tempSrc = fromImg.src;
-          fromImg.src = toImg.src;
-          toImg.src = tempSrc;
-
-          const tempIndex = fromTile.dataset.correctIndex;
-          fromTile.dataset.correctIndex = tile.dataset.correctIndex;
-          tile.dataset.correctIndex = tempIndex;
+          swapTiles(fromTile, tile);
         }
       }
-      checkCompletion();
+
+      scheduleCompletionCheck();
     });
 
-    // --- TOUCH EVENTS (MOBILE) ---
+    // MOBILE TOUCH DRAG
     tile.addEventListener("touchstart", (e) => {
-      e.preventDefault(); // Stop scrolling
+      e.preventDefault();
       isDragging = true;
       draggedTile = tile;
 
       const touch = e.touches[0];
       const rect = tile.getBoundingClientRect();
 
-      // Calculate offset from the finger to the top-left of the tile
       offsetX = touch.clientX - rect.left;
       offsetY = touch.clientY - rect.top;
 
-      // Make tile float above everything using FIXED position
-      // The wrapper stays behind to hold the grid space
       tile.style.position = "fixed";
       tile.style.zIndex = "1000";
-      tile.style.width = "100px"; // Enforce size while dragging
+      tile.style.width = "100px";
       tile.style.height = "100px";
-      tile.style.left = rect.left + "px"; // Start exactly where it was
+      tile.style.left = rect.left + "px";
       tile.style.top = rect.top + "px";
       tile.style.opacity = "0.8";
-      tile.style.transform = "scale(1.1)"; // Slight pop effect
+      tile.style.transform = "scale(1.1)";
     });
 
     tile.addEventListener("touchmove", (e) => {
@@ -149,7 +148,6 @@ export function startRevealGame(onComplete) {
       e.preventDefault();
 
       const touch = e.touches[0];
-      // Update position based on finger
       tile.style.left = touch.clientX - offsetX + "px";
       tile.style.top = touch.clientY - offsetY + "px";
     });
@@ -157,54 +155,58 @@ export function startRevealGame(onComplete) {
     tile.addEventListener("touchend", (e) => {
       if (!isDragging || draggedTile !== tile) return;
 
-      // 1. Hide dragged tile momentarily so we can see what's UNDER it
       tile.style.visibility = "hidden";
-
       const touch = e.changedTouches[0];
       const elementAtPoint = document.elementFromPoint(
         touch.clientX,
         touch.clientY,
       );
-
-      // 2. Show it again immediately
       tile.style.visibility = "visible";
 
       const targetTile = elementAtPoint?.closest(".tile");
 
-      // 3. Swap if valid target
       if (targetTile && targetTile !== tile) {
-        const fromImg = tile.querySelector("img");
-        const toImg = targetTile.querySelector("img");
-
-        const tempSrc = fromImg.src;
-        fromImg.src = toImg.src;
-        toImg.src = tempSrc;
-
-        const tempIndex = tile.dataset.correctIndex;
-        tile.dataset.correctIndex = targetTile.dataset.correctIndex;
-        targetTile.dataset.correctIndex = tempIndex;
+        swapTiles(tile, targetTile);
       }
 
-      // 4. Reset Styles (Snap back to wrapper)
-      tile.style.position = "relative";
-      tile.style.zIndex = "";
-      tile.style.left = "";
-      tile.style.top = "";
-      tile.style.width = "100%";
-      tile.style.height = "100%";
-      tile.style.opacity = "1";
-      tile.style.transform = "";
-
+      resetTilePosition(tile);
       isDragging = false;
       draggedTile = null;
-      checkCompletion();
+
+      scheduleCompletionCheck();
     });
   });
 
-  // UPDATED COMPLETION CHECK (Look inside wrappers)
+  // SWAP LOGIC
+  function swapTiles(tileA, tileB) {
+    const imgA = tileA.querySelector("img");
+    const imgB = tileB.querySelector("img");
+
+    const tempSrc = imgA.src;
+    imgA.src = imgB.src;
+    imgB.src = tempSrc;
+
+    const tempIndex = tileA.dataset.correctIndex;
+    tileA.dataset.correctIndex = tileB.dataset.correctIndex;
+    tileB.dataset.correctIndex = tempIndex;
+  }
+
+  // RESET MOBILE TILE POSITION
+  function resetTilePosition(tile) {
+    tile.style.position = "relative";
+    tile.style.zIndex = "";
+    tile.style.left = "";
+    tile.style.top = "";
+    tile.style.width = "100%";
+    tile.style.height = "100%";
+    tile.style.opacity = "1";
+    tile.style.transform = "";
+  }
+
+  // COMPLETION CHECK
   function checkCompletion() {
     let correct = 0;
-    // Iterate over wrappers (children of board), then find the tile inside
+
     [...board.children].forEach((wrapper, i) => {
       const tile = wrapper.querySelector(".tile");
       if (tile && parseInt(tile.dataset.correctIndex) === i) correct++;
@@ -213,9 +215,11 @@ export function startRevealGame(onComplete) {
     if (correct === 9) {
       finishScreen.style.display = "block";
       board.style.display = "none";
+      instructions.style.display = "none";
+
       setTimeout(() => {
         onComplete && onComplete();
-      }, 800);
+      }, 1000);
     }
   }
 }

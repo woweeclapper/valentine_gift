@@ -4,7 +4,7 @@ import { startCatchGame } from "./games/game_catch.js";
 import { initEnvelopeAnimation } from "./love letter/envelope.js";
 
 const games = [startMeetGame, startRevealGame, startCatchGame];
-const chosenGame = startRevealGame; // intentional
+const chosenGame = games[Math.floor(Math.random() * games.length)]; // Randomly choose a game
 
 window.onload = () => {
   console.log("chosen game:", chosenGame.name);
