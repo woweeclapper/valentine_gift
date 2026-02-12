@@ -2,7 +2,7 @@ export function startCatchGame(onComplete) {
   const container = document.getElementById("game-container");
   container.innerHTML = "";
 
-  // Create grid element
+  //create grid element
   const grid = document.createElement("div");
   grid.id = "grid";
   grid.style.width = "300px";
@@ -13,14 +13,14 @@ export function startCatchGame(onComplete) {
   grid.style.position = "relative"; // Ensure absolute positioning works within grid
   container.appendChild(grid);
 
-  // FINISH SCREEN
+  //finish screen
   let finishScreen = document.createElement("img");
   finishScreen.id = "finishImg";
   finishScreen.src = "assets/peach_jump_goma.gif";
   finishScreen.style.display = "none";
   container.appendChild(finishScreen);
 
-  // BUCKET ELEMENT
+  //bucket element
   const bucket = document.createElement("img");
   bucket.src = "assets/goma_empty.gif";
   bucket.style.position = "absolute";
@@ -44,7 +44,7 @@ export function startCatchGame(onComplete) {
   `;
   container.appendChild(instructions);
 
-  // BUCKET STATES
+  //bucket state
   const bucket1 = "assets/goma_empty.gif";
   const bucket2 = "assets/goma_half.png";
   const bucket3 = "assets/goma_full.gif";
@@ -69,7 +69,7 @@ export function startCatchGame(onComplete) {
     }
   }
 
-  // SPAWN HEART
+  //spawning heart function
   function spawnHeart() {
     if (isGameOver) return;
 
@@ -90,7 +90,7 @@ export function startCatchGame(onComplete) {
     });
   }
 
-  // GAME LOOP
+  //game loop
   function update() {
     if (isGameOver) return;
 
@@ -101,7 +101,7 @@ export function startCatchGame(onComplete) {
       const heartRect = h.el.getBoundingClientRect();
       const bucketRect = bucket.getBoundingClientRect();
 
-      // collision
+      //collision
       if (
         !h.caught &&
         heartRect.bottom >= bucketRect.top &&
@@ -113,7 +113,7 @@ export function startCatchGame(onComplete) {
         updateBucketAsset();
         h.el.remove();
 
-        // POP ANIMATION
+        //pop animation
         bucket.classList.remove("bucket-pop"); // reset
         void bucket.offsetWidth; // force reflow
         bucket.classList.add("bucket-pop"); // replay animation
@@ -127,7 +127,7 @@ export function startCatchGame(onComplete) {
 
     hearts = hearts.filter((h) => !h.caught && h.y < 420);
 
-    // WIN CONDITION
+    //win condition
     if (caught >= 10) {
       const envelope = document.getElementById("envelope");
       if (envelope) envelope.style.top = "150px";
@@ -148,7 +148,7 @@ export function startCatchGame(onComplete) {
     requestAnimationFrame(update);
   }
 
-  // KEYBOARD CONTROL
+  //keyboard control
   window.onkeydown = (e) => {
     if (isGameOver) return;
     if (e.key === "ArrowLeft") playerX -= 20;
@@ -157,7 +157,7 @@ export function startCatchGame(onComplete) {
     bucket.style.left = playerX + "px";
   };
 
-  // DRAG CONTROL
+  //drag control
   let isDragging = false;
 
   grid.addEventListener("mousedown", () => {
@@ -183,7 +183,7 @@ export function startCatchGame(onComplete) {
     bucket.style.left = playerX + "px";
   });
 
-  // START GAME
+  //start game
   setInterval(spawnHeart, 800);
   update();
 }
