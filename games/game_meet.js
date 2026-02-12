@@ -120,6 +120,9 @@ export function startMeetGame(onComplete) {
 
     // WIN CONDITION CHECK
     if (posA === posB) {
+      const envelope = document.getElementById("envelope");
+      if (envelope) envelope.style.top = "150px";
+
       huggingImg.style.display = "block";
       instructions.style.display = "none";
 

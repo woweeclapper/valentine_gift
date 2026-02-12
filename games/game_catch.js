@@ -129,9 +129,12 @@ export function startCatchGame(onComplete) {
 
     // WIN CONDITION
     if (caught >= 10) {
+      const envelope = document.getElementById("envelope");
+      if (envelope) envelope.style.top = "150px";
       grid.innerHTML = ""; // Clear the grid
       grid.style.display = "none";
       isGameOver = true;
+
       finishScreen.style.display = "block";
       instructions.style.display = "none";
 

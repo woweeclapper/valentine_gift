@@ -213,6 +213,9 @@ export function startRevealGame(onComplete) {
     });
 
     if (correct === 9) {
+      const envelope = document.getElementById("envelope");
+      if (envelope) envelope.style.top = "150px";
+
       finishScreen.style.display = "block";
       board.style.display = "none";
       instructions.style.display = "none";
