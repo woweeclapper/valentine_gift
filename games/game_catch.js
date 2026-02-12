@@ -39,8 +39,8 @@ export function startCatchGame(onComplete) {
   instructions.id = "instructions";
   instructions.classList.add("instructions");
   instructions.innerHTML = `
-    <p>🎮 Use arrow keys or touch and drag to move Goma!</p>
-    <p>❤️ Fill his bucket with 10 hearts to win! Good Luck! </p>
+    <p>🎮 Use arrow keys or drag to move Goma!</p>
+    <p>❤️ Fill his bucket with 10 hearts to win!</p>
   `;
   container.appendChild(instructions);
 
