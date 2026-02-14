@@ -15,12 +15,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Validate HTML
-        uses: Cyb3r-Jak3/html5validator-action@v4
+        uses: Cyb3r-Jak3/html5validator-action@master
         with:
           root: .
 
       - name: Validate CSS
         run: |
+          sudo apt-get update
           sudo apt-get install -y csslint
           csslint **/*.css || true
 
