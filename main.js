@@ -1,7 +1,7 @@
 import { startMeetGame } from "./games/game_meet.js";
 import { startRevealGame } from "./games/game_reveal.js";
 import { startCatchGame } from "./games/game_catch.js";
-import { initEnvelopeAnimation } from "./love letter/envelope.js";
+import { initEnvelopeAnimation } from "./love_letter/envelope.js";
 
 const games = [startMeetGame, startRevealGame, startCatchGame];
 const chosenGame = games[Math.floor(Math.random() * games.length)]; // Randomly choose a game
