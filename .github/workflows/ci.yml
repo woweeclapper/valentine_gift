@@ -19,11 +19,12 @@ jobs:
         with:
           root: .
 
-      - name: Validate CSS
+      - name: Validate CSS with W3C
         run: |
-          sudo apt-get update
-          sudo apt-get install -y csslint
-          csslint **/*.css || true
+          for file in $(find . -name "*.css"); do
+            echo "Validating $file"
+            curl -s -F "file=@$file" https://validator.w3.org/nu/?out=text
+          done
 
       - name: Validate JS syntax
         run: |
